@@ -1,73 +1,62 @@
-//require the express.router module for routes
-const router = require('express').Router();
-//require the db.json file to read and write notes data
-const notes = require('../db/db.json');
-//Require the file system node module for read write functionality to the json data file
-const fs = require('fs');
 
 
+//requirements 
+const express = require("express").Router;
+const fs = require("fs");
+const database = require("./db")
 
-//function to write data to the db.json file
-var writeFile = (notes) => {
-    notes = JSON.stringify(notes);
-    // Use fs module to write data to the database json file
-    fs.writeFileSync("./db/db.json", notes, function(err){
-        if (err) {
-            return console.log(err);
+
+//required for post and put requests
+router.use(express.urlencoded({ extended: true }));
+router.use(express.json());
+
+//provides context for file paths
+router.get("/", function (req, res) {
+    res.sendFile(path.join(__dirname, "/public/index.html"));
+});
+
+router.get("/notes", function (req, res) {
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
+})
+router.route("/api/notes")
+    .get(function (req, res) {
+        res.json(database);
+    })
+
+//adds info for new note to database json string
+    .post(function (req, res) {
+        let jsonFilePath = path.join(__dirname, "/db/db.json");
+        let newNote = req.body;
+        let highestId = 50;
+        for (let i = 0; i < database.length; i++) {
+            let individualNote = database[i];
+
+            if (individualNote.id > highestId) {
+                highestId = individualNote.id;
+            }
         }
+        newNote.id = highestId + 1;
+        database.push(newNote)
+        //stringifies and then saves data 
+        fs.writeFile(jsonFilePath, JSON.stringify(database), function (err) {
+
+            if (err) {
+                return console.log(err);
+            }
+            console.log("Your note was saved!");
+        });
+        res.json(newNote);
     });
-}
 
-//get api route to return all notes
-router.get("/notes", (req, res) => {
-    //respond with content of db.json
-    res.json(notes);
-    //console log to let dev know this route is working
-    console.log("current notes: " + JSON.stringify(notes))
-});
 
-// post api route to add a new note
-router.post("/notes", (req, res) => {
-//Create a unique ID for each note so user doesn't have to
-    // if this is the first note set ID to 0
-    if (notes.length == 0){
-        req.body.id = "0";
-    } 
-    //if it's not the first note, take the last note in the file and add 1 to it's id number for this new note
-    else{
-        req.body.id = JSON.stringify(JSON.parse(notes[notes.length - 1].id) + 1);
+//stringifies so it can be transferred 
+fs.writeFile(jsonFilePath, JSON.stringify(database), function (err) {
+
+    if (err) {
+        return console.log(err);
     }
-    //add new note entry to the db.json file
-    notes.push(req.body);
-    writeFile(notes);
-    //return the newly entered note.
-    res.json(req.body);
-    //console log to let dev know this route is working
-    console.log(req.body.title + " saved to notes.")
+    console.log("Your note was saved!");
 });
+res.json(newNote);
 
-//delete api route to remove a note
-router.delete("/notes/:id", (req, res) => {
-    // take ID parameter and convert it to a string
-    let id = req.params.id.toString();
-    
-    //loop through each note in the json file starting with the first note as 0.
-    for (i=0; i < notes.length; i++){
-       //if the id for a note matches the ID parameter of the delete request
-        if (notes[i].id == id){
-            // send the note as the response
-            res.send(notes[i]);
-
-            // remove the note from the notes array
-            notes.splice(i,1);
-            //exit the for loop
-            break;
-        }
-    }
-    // re-write db without deleted note
-    writeFile(notes);
-    console.log("note " + id + " deleted from notes.")
-});
-
-//export all routes and writeFile function
-module.exports = router, writeFile;
+// module.exports = router;

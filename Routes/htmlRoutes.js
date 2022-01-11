@@ -1,6 +1,3 @@
-
-//require the path module for more accurate file system navigation for express router
-const path = require('path');
 //require the express router module for routes
 const router = require('express').Router();
 

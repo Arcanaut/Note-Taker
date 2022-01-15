@@ -1,62 +1,52 @@
 
 
 //requirements 
-const express = require("express").Router;
+const router = require("express").Router();
 const fs = require("fs");
-const database = require("./db")
-
-
-//required for post and put requests
-router.use(express.urlencoded({ extended: true }));
-router.use(express.json());
+const database = require("../Develop/db/db.json")
+const path = require('path')
+const store = require('../Develop/db/store.js')
 
 //provides context for file paths
-router.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, "/public/index.html"));
-});
 
 router.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "/public/notes.html"));
+    res.sendFile(path.join(__dirname, "../Develop/public/notes.html"));
 })
-router.route("/api/notes")
-    .get(function (req, res) {
-        res.json(database);
-    })
 
 //adds info for new note to database json string
-    .post(function (req, res) {
-        let jsonFilePath = path.join(__dirname, "/db/db.json");
-        let newNote = req.body;
-        let highestId = 50;
-        for (let i = 0; i < database.length; i++) {
-            let individualNote = database[i];
+    router.post('/notes', (req, res) => {
+        store.addNote(req.body)
+        .then((newNote) => {
+            res.json(newNote)
+        }).catch((error)=>{
+            console.error(error);
+        })
 
-            if (individualNote.id > highestId) {
-                highestId = individualNote.id;
-            }
-        }
-        newNote.id = highestId + 1;
-        database.push(newNote)
+        
+
+        // let jsonFilePath = path.join(__dirname, "../Develop/db/db.json");
+        // let newNote = req.body;
+        // let highestId = 50;
+        // for (let i = 0; i < database.length; i++) {
+        //     let individualNote = database[i];
+
+        //     if (individualNote.id > highestId) {
+        //         highestId = individualNote.id;
+        //     }
+        // }
+        // newNote.id = highestId + 1;
+        // database.push(newNote)
         //stringifies and then saves data 
-        fs.writeFile(jsonFilePath, JSON.stringify(database), function (err) {
+        // fs.writeFile(jsonFilePath, JSON.stringify(database), function (err) {
 
-            if (err) {
-                return console.log(err);
-            }
-            console.log("Your note was saved!");
-        });
-        res.json(newNote);
+        //     if (err) {
+        //         return console.log(err);
+        //     }
+        //     console.log("Your note was saved!");
+        // });
+        // res.json(newNote);
     });
 
 
-//stringifies so it can be transferred 
-fs.writeFile(jsonFilePath, JSON.stringify(database), function (err) {
 
-    if (err) {
-        return console.log(err);
-    }
-    console.log("Your note was saved!");
-});
-res.json(newNote);
-
-// module.exports = router;
+module.exports = router;

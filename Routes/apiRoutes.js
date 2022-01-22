@@ -1,19 +1,17 @@
 //requirements 
 const router = require("express").Router();
-const fs = require("fs");
-const database = require("../Develop/db/db.json")
-const path = require('path')
+// const fs = require("fs");
+// const database = require("../Develop/db/db.json")
+// const path = require('path')
 const store = require('../Develop/db/store.js');
-const {
-    getNotes
-} = require("../Develop/db/store.js");
+// const { getNotes } = require("../Develop/db/store.js");
 
 //provides context for file paths
 
 router.get("/notes", function (req, res) {
     // res.sendFile(path.join(__dirname, "../Develop/public/notes.html"));
 
-    getNotes()
+    store.getNotes()
         .then((newNote) => {
            return res.json(newNote)
         }).catch((error) => {

@@ -11,16 +11,16 @@ const writeFileAsync = util.promisify(fs.writeFile);
 
 class Store {
     read(){
-        return readFileAsync('../Develop/db/db.json', 'utf-8')
+        return readFileAsync('db/db.json', 'utf8')
     }
 
 
     write(note){
-        return writeFileAsync('../Develop/db/db.json',JSON.stringify(note));
+        return writeFileAsync('db.json',JSON.stringify(note));
     }
 
     getNotes(){
-        return  this.read().then(notes => {
+        return this.read().then(notes => {
             let parsedNotes;
             try {
                 parsedNotes = [].concat(JSON.parse(notes))
@@ -30,6 +30,8 @@ class Store {
             return parsedNotes;
 
 
+        }).catch((error) => {
+            res.status(500).json(error)
         })
     }
 

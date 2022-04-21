@@ -2,7 +2,7 @@
 
 Designed and developed by Brendan Ahearn
 
-![Hello Word](https://github.com/Arcanaut/Note-Taker/blob/main/public/assets/thumbnail.png)
+![Note Taker](https://github.com/Arcanaut/Note-Taker/blob/main/public/assets/thumbnail.png)
 ## App Description
 A note-taking app that allows the user to create and delete notes as needed.
 

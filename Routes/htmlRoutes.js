@@ -1,7 +1,6 @@
 //require the express router module for routes
-const router = require('express').Router();
 const path = require('path')
-
+const router = require('express').Router();
 
 
   // get route to notes.html

@@ -4,7 +4,6 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
-var activeNote = {};
 
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
@@ -25,7 +24,7 @@ const hide = (elem) => {
 };
 
 // activeNote is used to keep track of the note in the textarea
-
+let activeNote = {};
 //gets notes from database
 const getNotes = () =>
   fetch('/api/notes', {

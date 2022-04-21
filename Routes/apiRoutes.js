@@ -5,13 +5,13 @@ const fs = require("fs");
 // const path = require('path')
 const {v4: uuidv4} = require('uuid');
 // const store = require('../store.js');
-// const { getNotes } = require("../Develop/db/store.js");
+
 
 //provides context for file paths
 
 //gets all notes from db.json array
 router.get("/notes", function (req, res) {
-    // res.sendFile(path.join(__dirname, "../Develop/public/notes.html"));
+   
 
     store.getNotes()
         .then((newNote) => {

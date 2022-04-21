@@ -1,36 +1,36 @@
 //requirements 
 const router = require("express").Router();
 const fs = require("fs");
-// const database = require("../Develop/db/db.json")
+
 // const path = require('path')
 const {v4: uuidv4} = require('uuid');
-// const store = require('../store.js');
-
 
 //provides context for file paths
+//gets notes from db.json array
+router.get("./notes", function (req, res) {
+   res.json(db).catch((error) => {
+    res.status(500).json(error)}
+)});
 
-//gets all notes from db.json array
-router.get("/notes", function (req, res) {
-   
-
-    store.getNotes()
-        .then((newNote) => {
-           return res.json(newNote)
-        }).catch((error) => {
-        res.status(500).json(error)
-        })
-})
+// return res.json(newNote)
+//         }).catch((error) => {
+        // res.status(500).json(error)
+//         })
 
 //adds info for new note to database json string
 router.post('/notes', (req, res) => {
-    store.addNote(req.body)
-        .then((newNote) => {
-            res.json(newNote)
-        }).catch((error) => {
-        res.status(500).json(error)
-        })
+    const newNote = req.body;
+    //gives new note a unique ID
+    newNote.id = uuidv4();
+    //pushes new note in to db.json array
+    db.push(newNote);
+    
 
+});
 
+// .catch((error) => {
+        //     res.status(500).json(error)
+        //     })
 
     // let jsonFilePath = path.join(__dirname, "../Develop/db/db.json");
     // let newNote = req.body;
@@ -53,8 +53,5 @@ router.post('/notes', (req, res) => {
     //     console.log("Your note was saved!");
     // });
     // res.json(newNote);
-});
-
-
 
 module.exports = router;

@@ -29,9 +29,6 @@ class Store {
             }
             return parsedNotes;
         })
-        // .catch((error) => {
-        //     res.status(500).json(error)
-        // })
     }
 
     addNote(note){

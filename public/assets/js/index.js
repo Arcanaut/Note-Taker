@@ -4,6 +4,8 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
+var activeNote = {};
+
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
@@ -23,8 +25,8 @@ const hide = (elem) => {
 };
 
 // activeNote is used to keep track of the note in the textarea
-let activeNote = {};
 
+//gets notes from database
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
@@ -32,7 +34,8 @@ const getNotes = () =>
       'Content-Type': 'application/json',
     },
   });
-
+  
+//saves notes to database
 const saveNote = (note) =>
   fetch('/api/notes', {
     method: 'POST',
@@ -70,7 +73,7 @@ const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
-  };
+  }
   saveNote(newNote).then(() => {
     getAndRenderNotes();
     renderActiveNote();
@@ -171,13 +174,14 @@ const renderNoteList = async (notes) => {
 };
 
 // Gets notes from the db and renders them to the sidebar
-const getAndRenderNotes = () => getNotes().then(renderNoteList);
+const getAndRenderNotes = () => getNotes().then(renderNoteList(data));
 
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
+
 }
 
 getAndRenderNotes();
